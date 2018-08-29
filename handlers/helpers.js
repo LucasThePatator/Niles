@@ -8,8 +8,11 @@ let minimumPermissions = settings.secrets.minimumPermissions;
 
 function log() {
     let message = `\`\`\`[${new Date().toUTCString()}] ${Array.from(arguments).join(" ")}\`\`\``;
-    bot.client.channels.get(settings.secrets.log_discord_channel).send(message);
-    console.log(message);
+    if(bot.client.channels.size > 0)
+    {
+        bot.client.channels.get(settings.secrets.log_discord_channel).send(message);
+        console.log(message);
+    }
 }
 
 function logError() {
