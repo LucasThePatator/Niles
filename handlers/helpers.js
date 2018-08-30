@@ -8,8 +8,11 @@ let minimumPermissions = settings.secrets.minimumPermissions;
 
 function log() {
     let message = `\`\`\`[${new Date().toUTCString()}] ${Array.from(arguments).join(" ")}\`\`\``;
-    bot.client.channels.get(settings.secrets.log_discord_channel).send(message);
-    console.log(message);
+    if(bot.client.channels.size > 0)
+    {
+        bot.client.channels.get(settings.secrets.log_discord_channel).send(message);
+        console.log(message);
+    }
 }
 
 function logError() {
@@ -111,6 +114,14 @@ function convertDate(dateToConvert, guildid) {
     let utcdate = new Date(utc);
     let nd = new Date(utc + (3600000*offset));
     return nd;
+}
+
+function getOutputDateString(date) {
+    let year = date.getFullYear();
+    let month = prependZero(date.getMonth() + 1);
+    let day = prependZero(date.getDate());
+    let dateString = `${year}${month}${day}`;
+    return dateString;
 }
 
 function stringDate(date, guildid, hour) {
@@ -236,6 +247,7 @@ module.exports = {
     logError,
     readFile,
     getStringTime,
+    getOutputDateString,
     stringDate,
     hourString,
     convertDate,

@@ -13,13 +13,7 @@ exports.create = (guild) => {
           fs.mkdirSync(guildPath);
       }
       let emptyCal = {
-          "day0": [],
-          "day1": [],
-          "day2": [],
-          "day3": [],
-          "day4": [],
-          "day5": [],
-          "day6": [],
+          "events": [],
           "lastUpdate": "",
           "calendarMessageId": ""
       };
