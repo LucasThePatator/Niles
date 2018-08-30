@@ -109,30 +109,26 @@ function deleteMessages(message) {
     });
 }
 
-function createDayMap(message) {
-    let dayMap = [];
-    let d = new Date();
-    let nd = helpers.convertDate(d, message.guild.id);
-    dayMap[0] = new Date(String(nd));
-    for (let i = 1; i < 7; i++) {
-        dayMap[i] = new Date(nd.setDate(nd.getDate() + 1));
-    }
-    return dayMap;
-}
 
 function checkDateMatch (date1, date2) {
     return (date1.getFullYear() === date2.getFullYear() && date1.getMonth() === date2.getMonth() && date1.getDate() === date2.getDate())
 }
 
-function getEvents(message, calendarID, dayMap) {
+function getEvents(message, calendarID, events) {
     let calendarPath = path.join(__dirname, "..", "stores", message.guild.id, "calendar.json");
     let calendar = helpers.readFile(calendarPath);
     let guildSettingsPath = path.join(__dirname, "..", "stores", message.guild.id, "settings.json");
     let guildSettings = helpers.readFile(guildSettingsPath);
-    let events = [];
     let tz = guildSettings["timezone"];
-    let startDate = helpers.stringDate(dayMap[0], message.guild.id, "start");
-    let endDate = helpers.stringDate(dayMap[6], message.guild.id, "end");
+
+    let d = new Date();
+    let nd = helpers.convertDate(d, message.guild.id);
+    let tempStartDate = new Date(String(nd));   
+    let tempEndDate = new Date(nd.setDate(nd.getDate() + 150));
+
+    let startDate = helpers.stringDate(tempStartDate, message.guild.id, "start")
+    let endDate = helpers.stringDate(tempEndDate, message.guild.id, "end")
+
     let params = {
         timeMin:startDate,
         timeMax:endDate,
@@ -149,24 +145,7 @@ function getEvents(message, calendarID, dayMap) {
             };
             events.push(event);
         }
-        for(let day = 0; day < 7; day++) {
-            let key = "day" + String(day);
-            let matches = [];
-            for (let j = 0; j < json.length; j++) {
-                let tempDate = new Date(events[j]["start"]["dateTime"]);
-                tempDate = helpers.convertDate(tempDate, message.guild.id);
-                if (checkDateMatch(dayMap[day], tempDate)) {
-                    matches.push(events[j]);
-                }
-                if (events[j]["start"]["date"]) {
-                    let allDayEvent = new Date(events[j]["start"]["date"]);
-                    if (checkDateMatch(dayMap[day], allDayEvent)) {
-                        matches.push(events[j]);
-                    }
-                }
-            }
-            calendar[key] = matches;
-        }
+        calendar[0] = events;
         let d = new Date();
         calendar["lastUpdate"] = d;
         helpers.writeGuildSpecific(message.guild.id, calendar, "calendar");
@@ -188,60 +167,41 @@ function getEvents(message, calendarID, dayMap) {
     });
 }
 
-function generateCalendar (message, dayMap) {
+function generateCalendar (message, events) {
     let calendarPath = path.join(__dirname, "..", "stores", message.guild.id, "calendar.json");
     let calendar = helpers.readFile(calendarPath);
     let guildSettingsPath = path.join(__dirname, "..", "stores", message.guild.id, "settings.json");
     let guildSettings = helpers.readFile(guildSettingsPath);
     let p = defer();
-    let finalString = "";
-    for (let i = 0; i < 7; i++) {
-        let key = "day" + String(i);
+    let finalString = "___***Upcoming schedule for the girls!***___\n\n";
+
+    let tempString = {}
+
+    for (let i = 0; i < events.length; i++) {
         let sendString = "";
-        sendString += `\n **${helpers.dayString(dayMap[i].getDay())}** - ${helpers.monthString(dayMap[i].getMonth())} ${dayMap[i].getDate()} \n`;
-        if (calendar[key].length === 0) {
-            sendString += "``` ```";
-        }
-        else {
-            sendString += "```";
-            // Map events for each day
-            for (let m = 0; m < calendar[key].length; m++) {
-                let options = {
-                    showHeaders: false,
-                    columnSplitter: " | ",
-                    columns: ["time", "events"],
-                    config: {
-                        time: {minWidth: 17, align: "center"},
-                        events: {minWidth: 20}
-                    }
-                };
-                let tempString = {};
-                let tempStartDate = new Date(calendar[key][m]["start"]["dateTime"]);
-                tempStartDate = helpers.convertDate(tempStartDate, message.guild.id);
-                let tempFinDate = new Date(calendar[key][m]["end"]["dateTime"]);
-                tempFinDate = helpers.convertDate(tempFinDate, message.guild.id);
-                tempString[helpers.getStringTime(tempStartDate) + " - " + helpers.getStringTime(tempFinDate)] = calendar[key][m]["summary"];
-                sendString += columnify(tempString, options) + "\n";
-            }
-            sendString += "```";
-        }
+        let tempStartDate = new Date(events[i]["start"]["dateTime"]);
+        tempStartDate = helpers.convertDate(tempStartDate, message.guild.id);
+        let tempFinDate = new Date(events[i]["end"]["dateTime"]);
+        tempFinDate = helpers.convertDate(tempFinDate, message.guild.id);
+
+        sendString += "`" + helpers.getOutputDateString(tempStartDate, message.guild.id) + "` ";
+        sendString += events[i]["summary"] + '\n\n';
+
         finalString += sendString;
     }
+
     let embed = new bot.discord.RichEmbed();
     embed.setTitle("CALENDAR");
     embed.setURL("https://calendar.google.com/calendar/embed?src=" + guildSettings["calendarID"]);
     embed.setColor("BLUE");
     embed.setDescription(finalString);
     embed.setFooter("Last update");
-    if (guildSettings["helpmenu"] === "1") {
-      embed.addField("USING THIS CALENDAR", "To create events use ``!create`` or ``!scrim`` followed by your event details i.e. ``!scrim xeno on monday at 8pm-10pm``\n\nTo delete events use``!delete <day> <start time>`` i.e. ``!delete monday 5pm``\n\nHide this message using ``!displayoptions help 0``\n\nEnter ``!help`` for a full list of commands.", false);
-    }
-    embed.setTimestamp(helpers.convertDate(new Date(), message.guild.id));
+    embed.setTimestamp(new Date());
     p.resolve(embed);
     return p.promise;
 }
 
-function postCalendar(message, dayMap) {
+function postCalendar(message, events) {
     let calendarPath = path.join(__dirname, "..", "stores", message.guild.id, "calendar.json");
     let calendar = helpers.readFile(calendarPath);
     let guildSettingsPath = path.join(__dirname, "..", "stores", message.guild.id, "settings.json");
@@ -261,7 +221,7 @@ function postCalendar(message, dayMap) {
             }
         });
     }
-    generateCalendar(message, dayMap).then((embed) => {
+    generateCalendar(message, events).then((embed) => {
         message.channel.send({embed}).then((sent) => {
           calendar["calendarMessageId"] = sent.id;
           sent.pin();
@@ -276,7 +236,7 @@ function postCalendar(message, dayMap) {
     });
 }
 
-function updateCalendar(message, dayMap, human) {
+function updateCalendar(message, events, human) {
   let guildSettingsPath = path.join(__dirname, "..", "stores", message.guild.id, "settings.json");
   let guildSettings = helpers.readFile(guildSettingsPath);
   let calendarPath = path.join(__dirname, "..", "stores", message.guild.id, "calendar.json");
@@ -288,7 +248,7 @@ function updateCalendar(message, dayMap, human) {
   }
   let messageId = calendar["calendarMessageId"];
   message.channel.fetchMessage(messageId).then((m) => {
-      generateCalendar(message, dayMap).then((embed) => {
+      generateCalendar(message, events).then((embed) => {
           m.edit({embed});
           if ((timerCount[message.guild.id] === 0 || !timerCount[message.guild.id]) && human) {
             startUpdateTimer(message);
@@ -319,19 +279,18 @@ function startUpdateTimer(message) {
     let calendarID = guildSettings["calendarID"];
     let calendarPath = path.join(__dirname, "..", "stores", message.guild.id, "calendar.json");
     let calendar = helpers.readFile(calendarPath);
-    let dayMap = createDayMap(message);
+    let events = []
     //Pull updates on set interval
     if (!autoUpdater[message.guild.id]) {
         timerCount[message.guild.id] += 1;
         helpers.log("Starting update timer in guild: " + message.guild.id);
-        return autoUpdater[message.guild.id] = setInterval(function func() {calendarUpdater(message, calendarID, dayMap, timerCount[message.guild.id]);}, settings.secrets.calendar_update_interval);
-
+        return autoUpdater[message.guild.id] = setInterval(function func() {calendarUpdater(message, calendarID, events, timerCount[message.guild.id]);}, settings.secrets.calendar_update_interval);
     }
     if (autoUpdater[message.guild.id]["_idleTimeout"] !== settings.secrets.calendar_update_interval) {
           try {
               timerCount[message.guild.id] += 1;
               helpers.log("Starting update timer in guild: " + message.guild.id);
-              return autoUpdater[message.guild.id] = setInterval(function func() {calendarUpdater(message, calendarID, dayMap, timerCount[message.guild.id]);}, settings.secrets.calendar_update_interval);
+              return autoUpdater[message.guild.id] = setInterval(function func() {calendarUpdater(message, calendarID, events, timerCount[message.guild.id]);}, settings.secrets.calendar_update_interval);
             } catch (err) {
                 helpers.log("error starting the autoupdater" + err);
                 clearInterval(autoUpdater[message.guild.id]);
@@ -395,21 +354,21 @@ function displayOptions(message) {
     }
 }
 
-function deleteEventById(eventId, calendarId, dayMap, message) {
+function deleteEventById(eventId, calendarId, events, message) {
     let params = {
         sendNotifications: true
       };
     return cal.Events.delete(calendarId, eventId, params).then((resp) => {
-        getEvents(message, calendarId, dayMap);
+        getEvents(message, calendarId, events);
         setTimeout(function func() {
-            updateCalendar(message, dayMap, true);
+            updateCalendar(message, events, true);
         }, 2000);
     }).catch((err) => {
         helpers.log("function deleteEventById error in guild: " + message.guild.id + ": " + err);
     });
 }
 
-function deleteEvent(message, calendarId, dayMap) {
+function deleteEvent(message, calendarId, events) {
     let calendarPath = path.join(__dirname, "..", "stores", message.guild.id, "calendar.json");
     let calendar = helpers.readFile(calendarPath);
     let guildSettingsPath = path.join(__dirname, "..", "stores", message.guild.id, "settings.json");
@@ -499,14 +458,13 @@ function deleteEvent(message, calendarId, dayMap) {
     });
 } // needs catches.
 
-function calendarUpdater(message, calendarId, dayMap,timerCount) {
+function calendarUpdater(message, calendarId, events,timerCount) {
     try {
-        dayMap = createDayMap(message);
         setTimeout(function func() {
-            getEvents(message, calendarId, dayMap);
+            getEvents(message, calendarId, events);
         }, 2000);
         setTimeout(function func() {
-            updateCalendar(message, dayMap, false);
+            updateCalendar(message, events, false);
         }, 4000);
     } catch (err) {
         helpers.log("error in autoupdater in guild: " + message.guild.id + ": " + err);
@@ -537,9 +495,9 @@ exports.deleteUpdater = function(guildid) {
     clearInterval(autoUpdater[guildid]);
 };
 
-function delayGetEvents(message, calendarId, dayMap) {
+function delayGetEvents(message, calendarId, events) {
     setTimeout(function func() {
-        getEvents(message, calendarId, dayMap);
+        getEvents(message, calendarId, events);
     }, 1000);
 }
 
@@ -549,7 +507,7 @@ function run(message) {
     let calendarID = guildSettings["calendarID"];
     let calendarPath = path.join(__dirname, "..", "stores", message.guild.id, "calendar.json");
     let calendar = helpers.readFile(calendarPath);
-    let dayMap = createDayMap(message);
+    let events = [];
     const cmd = message.content.toLowerCase().substring(guildSettings.prefix.length).split(" ")[0];
     if (cmd === "ping" || helpers.mentioned(message, "ping")) {
         message.channel.send(`:ping_pong: !Pong! ${bot.client.pings[0]}ms`).catch((err) => {
@@ -587,9 +545,9 @@ function run(message) {
         deleteMessages(message);
     }
     if (cmd === "display" || helpers.mentioned(message, "display")) {
-        delayGetEvents(message, calendarID, dayMap);
+        delayGetEvents(message, calendarID, events);
         setTimeout(function func() {
-            postCalendar(message, dayMap);
+            postCalendar(message, events);
         }, 2000);
         message.delete(5000);
     }
@@ -599,17 +557,17 @@ function run(message) {
           message.delete(5000);
           return;
         }
-        delayGetEvents(message, calendarID, dayMap);
+        delayGetEvents(message, calendarID, events);
         setTimeout(function func() {
-            updateCalendar(message, dayMap, true);}, 2000);
+            updateCalendar(message, events, true);}, 2000);
             message.delete(5000);
     }
     if(["create", "scrim"].includes(cmd) || helpers.mentioned(message, ["create", "scrim"])) {
         quickAddEvent(message, calendarID).then((resp) => {
-          getEvents(message, calendarID, dayMap);
+          getEvents(message, calendarID, events);
         }).then((resp) => {
           setTimeout(function func() {
-              updateCalendar(message, dayMap, true);
+              updateCalendar(message, events, true);
           }, 2000);
         }).catch((err) => {
             helpers.log("error creating event in guild: " + message.guild.id + ": " + err);
@@ -618,7 +576,7 @@ function run(message) {
     }
     if (cmd === "delete" || helpers.mentioned(message, "delete")) {
         if (message.content.split(" ").length === 3) {
-            deleteEvent(message, calendarID, dayMap);
+            deleteEvent(message, calendarID, events);
         }
         else {
             message.channel.send("Hmm.. I can't process that request, delete using the format ``!delete <day> <start time>`` i.e ``!delete tuesday 8pm``")
@@ -637,7 +595,7 @@ function run(message) {
         message.delete(5000);
     }
     if (cmd === "get" || helpers.mentioned(message, "get")) {
-        getEvents(message, calendarID, dayMap);
+        getEvents(message, calendarID, events);
         message.delete(5000);
     }
     if (cmd === "stop" || helpers.mentioned(message, "stop")) {

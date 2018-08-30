@@ -116,6 +116,14 @@ function convertDate(dateToConvert, guildid) {
     return nd;
 }
 
+function getOutputDateString(date) {
+    let year = date.getFullYear();
+    let month = prependZero(date.getMonth() + 1);
+    let day = prependZero(date.getDate());
+    let dateString = `${year}${month}${day}`;
+    return dateString;
+}
+
 function stringDate(date, guildid, hour) {
     let guildSettingsPath = path.join(__dirname, "..", "stores", guildid, "settings.json");
     let guildSettings = readFile(guildSettingsPath);
@@ -239,6 +247,7 @@ module.exports = {
     logError,
     readFile,
     getStringTime,
+    getOutputDateString,
     stringDate,
     hourString,
     convertDate,
