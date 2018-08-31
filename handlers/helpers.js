@@ -142,14 +142,14 @@ function stringDate(date, guildid, hour) {
             dateString += `${year}-${month}-${day}T00:00:00+${offset}`;
         }
         if (hour === "end") {
-            dateString += `${year}-${month}-${day}T23:59:00+${offset}`;
+            dateString += `${year}-${month}-${day}T00:00:00+${offset}`;
         }
     } else {
         if (hour === "start") {
             dateString += `${year}-${month}-${day}T00:00:00-${offset}`;
         }
         if (hour === "end") {
-            dateString += `${year}-${month}-${day}T23:59:00-${offset}`;
+            dateString += `${year}-${month}-${day}T00:00:00-${offset}`;
         }
     }
     return dateString;

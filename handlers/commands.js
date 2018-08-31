@@ -123,15 +123,15 @@ function getEvents(message, calendarID, events) {
 
     let d = new Date();
     let nd = helpers.convertDate(d, message.guild.id);
-    let tempStartDate = new Date(String(nd));   
+    let tempStartDate = new Date(nd.setDate(nd.getDate() - 1));   
     let tempEndDate = new Date(nd.setDate(nd.getDate() + 150));
 
     let startDate = helpers.stringDate(tempStartDate, message.guild.id, "start")
     let endDate = helpers.stringDate(tempEndDate, message.guild.id, "end")
 
     let params = {
-        timeMin:startDate,
-        timeMax:endDate,
+        //timeMin:startDate,
+        //timeMax:endDate,
         singleEvents: true,
         orderBy: "startTime"
         };
@@ -141,14 +141,31 @@ function getEvents(message, calendarID, events) {
                 id: json[i].id,
                 summary: json[i].summary,
                 start: json[i].start,
-                end: json[i].end
+                end: json[i].end,
+                allday: false
             };
-            events.push(event);
+            if (event["start"]["date"])
+            {
+                event.allday = true;
+                let tempStringStart = event["start"]["date"] + "T00:00:00";
+                event["start"]["dateTime"] = new Date(helpers.stringDate(new Date(tempStringStart), message.guild.id, "start"));
+                let tempStringEnd = event["end"]["date"] + "T00:00:00";
+                event["end"]["dateTime"] = new Date(helpers.stringDate(new Date(tempStringEnd), message.guild.id, "end"));
+            }
+            
+            let finalTime = new Date(event.end.dateTime).getTime();
+            let currentTime = Date.now();
+
+            if(finalTime >= currentTime)
+            {
+                events.push(event);
+            }
         }
         calendar[0] = events;
         let d = new Date();
         calendar["lastUpdate"] = d;
         helpers.writeGuildSpecific(message.guild.id, calendar, "calendar");
+
     }).catch((err) => {
         if(err.message.includes("notFound")) {
             helpers.log("function getEvents error in guild: " + message.guild.id + " : 404 error can't find calendar");
@@ -184,8 +201,10 @@ function generateCalendar (message, events) {
         let tempFinDate = new Date(events[i]["end"]["dateTime"]);
         tempFinDate = helpers.convertDate(tempFinDate, message.guild.id);
 
+        let testHours = helpers.getStringTime(tempStartDate);
+
         sendString += "`" + helpers.getOutputDateString(tempStartDate, message.guild.id) + "` ";
-        sendString += events[i]["summary"] + '\n\n';
+        sendString += events[i]["summary"] + ' - ' + testHours + ' KST' + '\n\n';
 
         finalString += sendString;
     }
