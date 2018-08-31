@@ -173,7 +173,7 @@ function generateCalendar (message, events) {
     let guildSettingsPath = path.join(__dirname, "..", "stores", message.guild.id, "settings.json");
     let guildSettings = helpers.readFile(guildSettingsPath);
     let p = defer();
-    let finalString = "___***Upcoming schedule for the girls!***___\n\n";
+    let finalString = "*Upcoming group and solo activities from the girls.*\n You can view the calendar in your browser [here](https://calendar.google.com/calendar/embed?src=esjpm52cbkkhdsfm2kcr6u0ico%40group.calendar.google.com&ctz=Asia%2FSeoul). \n\n";
 
     let tempString = {}
 
@@ -184,18 +184,19 @@ function generateCalendar (message, events) {
         let tempFinDate = new Date(events[i]["end"]["dateTime"]);
         tempFinDate = helpers.convertDate(tempFinDate, message.guild.id);
 
-        sendString += "`" + helpers.getOutputDateString(tempStartDate, message.guild.id) + "` ";
+        sendString += "    **— " + helpers.getOutputDateString(tempStartDate, message.guild.id) + "**    ";
         sendString += events[i]["summary"] + '\n\n';
 
         finalString += sendString;
     }
 
     let embed = new bot.discord.RichEmbed();
-    embed.setTitle("CALENDAR");
+    embed.setTitle("🗓 UPCOMING SNSD SCHEDULES");
     //embed.setURL("https://calendar.google.com/calendar/embed?src=" + guildSettings["calendarID"]);
+    embed.setThumbnail("https://cdn.discordapp.com/emojis/350243532545458176.png?v=1");
     embed.setColor("#ffb8ed");
     embed.setDescription(finalString);
-    embed.setFooter("Last update");
+    embed.setFooter("Last updated from the server", "https://cdn.discordapp.com/emojis/326370179908894730.png?v=1")
     embed.setTimestamp(new Date());
     p.resolve(embed);
     return p.promise;
