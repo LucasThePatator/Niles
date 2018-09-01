@@ -31,7 +31,7 @@ function run(message) {
       return helpers.log("no permission to send messages.");
     }
     //remove later^^
-    let guildSettingsPath = path.join(__dirname, "..", "stores", message.guild.id, "settings.json");
+let guildSettingsPath = path.join(__dirname, "..", "stores", message.guild.id, "settings.json").catch((err) => {         helpers.sendMessageHandler(message, err);         return;     });
     let guildSettings = helpers.readFile(guildSettingsPath);
     const cmd = message.content.toLowerCase().substring(guildSettings.prefix.length).split(" ")[0];
     if (allCommands.includes(cmd) || helpers.mentioned(message, allCommands)) {

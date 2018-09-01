@@ -11,6 +11,7 @@ let init = require("./handlers/init.js");
 let helpers = require("./handlers/helpers.js");
 let restricted = require("./handlers/nopermissions.js");
 let dm = require("./handlers/dm.js");
+const fs = require("fs");
 
 client.login(settings.secrets.bot_token);
 
@@ -41,6 +42,10 @@ client.on("message", (message) => {
     }
     //only load guild settings after checking that message is not direct message.
     let guildSettingsPath = path.join(__dirname, "stores", message.guild.id, "settings.json");
+    if(!fs.existsSync(guildSettingsPath))
+    {
+        return;
+    }
     let guildSettings = helpers.readFile(guildSettingsPath);
     if (!message.content.toLowerCase().startsWith(guildSettings.prefix) && !message.isMentioned(client.user.id)) {
         return;

@@ -190,7 +190,7 @@ function generateCalendar (message, events) {
     let guildSettingsPath = path.join(__dirname, "..", "stores", message.guild.id, "settings.json");
     let guildSettings = helpers.readFile(guildSettingsPath);
     let p = defer();
-    let finalString = "*Upcoming group and solo activities from the girls.*\n You can view the calendar in your browser [here](https://calendar.google.com/calendar/embed?src=esjpm52cbkkhdsfm2kcr6u0ico%40group.calendar.google.com&ctz=Asia%2FSeoul). \n\n";
+    let finalString = "*Upcoming group and solo activities from the girls.*\n You can view the calendar in your browser [here](https://calendar.google.com/calendar/embed?src=esjpm52cbkkhdsfm2kcr6u0ico%40group.calendar.google.com&ctz=Asia%2FSeoul). \n Dates are in ``YYYYMMDD`` format.\n\n";
 
     let tempString = {}
 

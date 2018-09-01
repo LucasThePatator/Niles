@@ -5,8 +5,8 @@ const SERVICE_ACCT_ID = secrets.service_acct_id;
 const KEYPATH = secrets.service_acct_keypath;
 const TIMEZONE = 'UTC+08:00';
 const CALENDAR_ID = {
-	'primary': 'lmpatator@gmail.com',
-	'calendar-1': 'bp9e0i2aeu9hs9lroh2mije6ng@group.calendar.google.com@group.calendar.google.com',
+	'primary': 'snsd-schedule-google-calendar@snsdcord-0805.iam.gserviceaccount.com',
+	'calendar-1': 'esjpm52cbkkhdsfm2kcr6u0ico@group.calendar.google.com',
 };
 
 let json = fs.readFileSync(KEYPATH, "utf8");
