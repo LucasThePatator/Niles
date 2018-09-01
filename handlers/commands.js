@@ -232,8 +232,8 @@ function postCalendar(message, events) {
     let guildSettingsPath = path.join(__dirname, "..", "stores", message.guild.id, "settings.json");
     let guildSettings = helpers.readFile(guildSettingsPath);
 
-    if (calendar["calendarMessageId"]) {
-        message.channel.fetchMessage(calendar["calendarMessageId"]).then((message) => {
+    if (calendar["calendarMessageId"]) {   
+        message.client.channels.get(settings.secrets["post_channel"]).fetchMessage(calendar["calendarMessageId"]).then((message) => {
             message.delete();
         }).catch((err) => {
             if (err.code === 10008) {
@@ -247,7 +247,7 @@ function postCalendar(message, events) {
         });
     }
     generateCalendar(message, events).then((embed) => {
-        message.channel.send({embed}).then((sent) => {
+        message.client.channels.get(settings.secrets["post_channel"]).send({embed}).then((sent) => {
           calendar["calendarMessageId"] = sent.id;
           sent.pin();
         })
@@ -268,11 +268,11 @@ function updateCalendar(message, events, human) {
   let calendar = helpers.readFile(calendarPath);
   if (calendar["calendarMessageId"] === "") {
       clearInterval(autoUpdater[message.guild.id]);
-      message.channel.send("I can't find the last calendar I posted. Use `!display` and I'll post a new one.").then((m) => {});
+      message.client.channels.get(settings.secrets["post_channel"]).send("I can't find the last calendar I posted. Use `!display` and I'll post a new one.").then((m) => {});
       return;
   }
   let messageId = calendar["calendarMessageId"];
-  message.channel.fetchMessage(messageId).then((m) => {
+  message.client.channels.get(settings.secrets["post_channel"]).fetchMessage(messageId).then((m) => {
       generateCalendar(message, events).then((embed) => {
           m.edit({embed});
           if ((timerCount[message.guild.id] === 0 || !timerCount[message.guild.id]) && human) {

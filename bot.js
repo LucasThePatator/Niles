@@ -28,6 +28,10 @@ client.on("guildDelete", (guild) => {
 });
 
 client.on("message", (message) => {
+    if(message.channel.id != settings.secrets["command_channel"])
+    {
+        return;
+    }
     if (message.author.bot) {
         return;
     }
