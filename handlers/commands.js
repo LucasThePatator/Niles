@@ -14,28 +14,29 @@ let guilds = require("./guilds.js");
 let cal = new CalendarAPI(settings.calendarConfig);
 let autoUpdater = [];
 let timerCount = [];
-const HELP_MESSAGE = "```\
-        Niles Usage\n\
----------------------------\n\
-!display             -  Display your calendar\n\
-!update / !sync      -  Update the Calendar\n\
-!create / !scrim     -  Create events using GCal's default interpreter - works best like !scrim xeno June 5 8pm - 9pm\n\
-!delete              -  Delete an event using the form !delete Friday 8pm, ONLY works like this !delete <day> <starttime>\n\
-!clean / !purge      -  Deletes messages in current channel, either !clean or !clean <number>\n\
-!stats / !info       -  Display list of statistics and information about the Niles bot\n\
-!invite              -  Get the invite link for Niles to join your server!\n\
-!setup               -  Get details on how to setup Niles\n\
-!id                  -  Set the Google calendar ID for the guild\n\
-!tz                  -  Set the timezone for the guild\n\
-!prefix              -  View or change the prefix for Niles\n\
-!help                -  Display this message\n\
-```\
-Visit http://niles.seanecoffey.com for more info.";
-const NO_CALENDAR_MESSAGE = "I can't seem to find your calendar! This is usually because you haven't invited Niles to access your calendar, run `!setup` to make sure you followed Step 1.\n\
+const HELP_MESSAGE = "\
+        **How to use the Zero schedule functionality**\n\
+```--- COMMANDS``` **[p] stands for the set prefix. By deafult this is set as !** \n\
+``[p]display``                   -  Zero will create a new post with the updated calendar, and pin it *!!Old pin will not be erased automatically!!*\n\
+``[p]update`` OR ``[p]sync``     -  Zero will only update the existing calendar post\n\
+``[p]create`` OR ``[p]scrim``    -  Create events using GCal's default interpreter - works best like ``!create fanmeet June 5 8pm - 9pm``\n\
+``[p]delete``                    -  Delete an event using the form ``!delete Friday 8pm`` *!!ONLY works like this !delete <day> <starttime>*\n\
+``[p]clean`` OR ``[p]purge``     -  Deletes messages in current channel, either ``!clean`` or ``!clean <number>``\n\
+``[p]stats`` OR ``[p]info``      -  Displays list of statistics and information about the Zero Schedule bot\n\
+``[p]invite``                    -  Get the invite link for Zero to join your server\n\
+``[p]setup``                     -  Get details on how to setup Zero's schedule functionality\n\
+``[p]id``                        -  Set the Google calendar ID for the server\n\
+``[p]tz``                        -  Set the timezone for the server\n\
+``[p]prefix``                    -  View or change the prefix for Zero\n\
+``[p]help``                      -  Display this message\n\
+\
+Zero's schedule functionality is based on the Niles bot. You can visit <http://niles.seanecoffey.com> for more info on Niles.";
+const NO_CALENDAR_MESSAGE = "I can't seem to find your calendar! This is usually because you haven't invited Zero to access your calendar, run `!setup` to make sure you followed Step 1.\n\
 You should also check that you have entered the correct calendar id using `!id`.\n\
 \nIf you are still getting this error join the Discord support server here: https://discord.gg/jNyntBn";
 exports.helpmessage = HELP_MESSAGE;
 
+const SNSD_GUIDE = "\SNSDcord usage guide";
 //functions
 
 function clean(channel, numberMessages, recurse) {
@@ -194,6 +195,7 @@ function generateCalendar (message, events) {
 
     let tempString = {}
 
+    let availableChars = 1900;
     for (let i = 0; i < events.length; i++) {
         let sendString = "";
         let tempStartDate = new Date(events[i]["start"]["dateTime"]);
@@ -208,19 +210,23 @@ function generateCalendar (message, events) {
         if(events[i].allday === false)
         {
             let hoursString = helpers.getStringTime(tempStartDate);
-            sendString += ' - ' + hoursString + ' KST';
+            sendString += ' ``(' + hoursString + ' KST)``';
         }
         sendString += '\n\n';
+        if(sendString.length + finalString.length > availableChars)
+        {
+            break;
+        }
         finalString += sendString;
     }
 
     let embed = new bot.discord.RichEmbed();
     embed.setTitle("🗓 UPCOMING SNSD SCHEDULES");
     //embed.setURL("https://calendar.google.com/calendar/embed?src=" + guildSettings["calendarID"]);
-    embed.setThumbnail("https://cdn.discordapp.com/emojis/350243532545458176.png?v=1");
+    embed.setThumbnail("https://imgur.com/uRdKJ7t");
     embed.setColor("#ffb8ed");
     embed.setDescription(finalString);
-    embed.setFooter("Last updated from the server", "https://cdn.discordapp.com/emojis/326370179908894730.png?v=1")
+    embed.setFooter("Last updated", "https://cdn.discordapp.com/emojis/326370179908894730.png?v=1")
     embed.setTimestamp(new Date());
     p.resolve(embed);
     return p.promise;
@@ -542,6 +548,10 @@ function run(message) {
     }
     if (cmd === "help" || helpers.mentioned(message, "help")) {
         message.channel.send(HELP_MESSAGE);
+        message.delete(5000);
+    }
+    if (cmd === "snsdcord" || helpers.mentioned(message, "help")) {
+        message.channel.send(SNSD_GUIDE);
         message.delete(5000);
     }
     if (cmd === "invite" || helpers.mentioned(message, "invite")) {

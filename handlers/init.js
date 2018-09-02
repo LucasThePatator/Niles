@@ -6,19 +6,19 @@ const guilds = require("./guilds.js");
 const defer = require("promise-defer");
 
 const HELP_MESSAGE = "```\
-        Niles Usage - SETUP MODE\n\
----------------------------\n\
-NOTE: ALL COMMANDS BECOME AVAILABLE AFTER SETUP IS COMPLETE\n\
-!setup               -  Get details on how to setup Niles for use.\n\
-!prefix              -  View or change the prefix for Niles\n\
-!id                  -  Set the Google calendar ID for the guild\n\
-!tz                  -  Set the timezone for the guild\n\
-!help                -  Display this message\n\
-```\n\
-Visit http://niles.seanecoffey.com/setup for more info.";
+        Zero Schedule functionality - SETUP MODE```\n\
+\n\
+NOTE: FURTHER COMMANDS BECOME AVAILABLE AFTER SETUP IS COMPLETE\n\
+``!setup``               -  Get details on how to setup the Zero Schedule functionality for use.\n\
+``!prefix``              -  View or change the prefix for Niles\n\
+``!id``                  -  Set the Google calendar ID for the server\n\
+``!tz``                  -  Set the timezone for the server\n\
+``!help``                -  Display full help message\n\
+\n\
+Visit <http://niles.seanecoffey.com/setup> for more info.";
 
 const SETUP_MESSAGE = "\
-Hi! Lets get me setup for use in this Discord. The steps are outlined below, but for a detailed setup guide, visit http://niles.seanecoffey.com/setup \n\
+Hi! Let's get me setup for use in this Discord. The steps are outlined below, but for a detailed setup guide, visit http://niles.seanecoffey.com/setup \n\
 \n1. Invite `niles-291@niles-169605.iam.gserviceaccount.com` to \'Make changes to events\' under the Permission Settings on the Google Calendar you want to use with Niles\n\
 2. Enter the Calendar ID of the calendar to Discord using the `!id` command, i.e. `!id 123abc@123abc.com`\n\
 3. Enter the timezone you want to use in Discord with the `!tz` command, i.e. `!tz gmt+10:00`, (Note: Must be formatted like this)\n\
