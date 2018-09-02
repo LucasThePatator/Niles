@@ -16,7 +16,8 @@ let autoUpdater = [];
 let timerCount = [];
 const HELP_MESSAGE = "\
         **How to use the Zero schedule functionality**\n\
-```--- COMMANDS``` **[p] stands for the set prefix. By deafult this is set as !** \n\
+``--- COMMANDS`` \n\*[p] stands for the set prefix. By default this is set as !* \n\
+\n\
 ``[p]display``                   -  Zero will create a new post with the updated calendar, and pin it *!!Old pin will not be erased automatically!!*\n\
 ``[p]update`` OR ``[p]sync``     -  Zero will only update the existing calendar post\n\
 ``[p]create`` OR ``[p]scrim``    -  Create events using GCal's default interpreter - works best like ``!create fanmeet June 5 8pm - 9pm``\n\
@@ -28,15 +29,54 @@ const HELP_MESSAGE = "\
 ``[p]id``                        -  Set the Google calendar ID for the server\n\
 ``[p]tz``                        -  Set the timezone for the server\n\
 ``[p]prefix``                    -  View or change the prefix for Zero\n\
-``[p]help``                      -  Display this message\n\
-\
-Zero's schedule functionality is based on the Niles bot. You can visit <http://niles.seanecoffey.com> for more info on Niles.";
-const NO_CALENDAR_MESSAGE = "I can't seem to find your calendar! This is usually because you haven't invited Zero to access your calendar, run `!setup` to make sure you followed Step 1.\n\
-You should also check that you have entered the correct calendar id using `!id`.\n\
-\nIf you are still getting this error join the Discord support server here: https://discord.gg/jNyntBn";
+``[p]snsdcord``                  - View the detailed guide on how to use Zero Schedule on SNSDcord\n\
+``[p]emotes``                    - Get a list of the SNSDcord emote IDs to be used in Google Calendar\n\
+``[p]snsdlogin`` OR ``[p]account`` - In case you forget our shared e-mail account for using the Google Calendar.\n\
+``[p]help`` OR ``commands``      -  Display this message\n\
+\n\n\
+Zero's schedule functionality is based on the Niles bot. You can visit <http://niles.seanecoffey.com> for more info on Niles.\n\
+For help or issues with Zero specifically, ping Pata or Frings.";
+const NO_CALENDAR_MESSAGE = "*bork...* I can't seem to find your calendar! This is usually because you haven't invited me to access your calendar. Run `!setup` to make sure you followed Step 1.\n\
+You should also check that you have entered the correct calendar id using `!id`!";
 exports.helpmessage = HELP_MESSAGE;
 
-const SNSD_GUIDE = "\SNSDcord usage guide";
+const SNSD_GUIDE = "**<:zero:431489909161852929> How to use Zero to update the SNSD schedule?**\n\n\
+``How it works:``\n\
+Zero is set to auto-update the SNSD calendar posted in <#213912439140515840> by replicating the information we add to the Google Calendar. It should auto-refresh every hour.\n\n\
+``How to use it:``\n\
+Manual commands should be sent in <#214191102821924864>m otherwise they will not work.\n\
+Using ``!update`` will make Zero edit the last posted calendar in <#213912439140515840>. \n\
+Using ``!display`` will make Zero send a new updated post to <#213912439140515840> and pin it. *Only to be used every two weeks to a month.*\n\n\
+``Step by step``\n\
+1. Login to <https://calendar.google.com/calendar/> with the shared SNSDcord google account. *If unsure, message Frings for credentials.*\n\
+2. Make sure you are only viewing the __SNSD Schedule__ calendar (left sidebar);\n\
+2. Add an event to the __SNSD Schedule__ calendar according to guidelines (set a title, date, and time).\n\
+3. Let Zero do the rest.\n\n\
+``Google Calendar guidelines``\n\
+\n\
+Events need to follow some very easy criteria to not cause issues (and look pretty):\n\
+**For now, recurring events should only be added once at the start of the month or its first instance (with information on the title of when they recurr).** *This is until we further develop alternatives to Discord's character limit.*\n\
+- Every event needs EITHER a start and end time, OR be set as all day event (in case we don't know start time);\n\
+- In the title of the event, you should only add: ``<:memberemote:> [EVENT TAG] Title``. Zero will do the rest.\n\
+- You can also add inline links to the tile by entering ``[link title](linkurl.com)``.\n\
+- To get the ID of an emote, you can run the command ``!emotes``.\n\
+-  Every two weeks (or max one month), ``!display`` should be ran **once** to have a new post in <#213912439140515840>;\n\n\
+In case of doubts or issues, ping Frings or Pata.";
+
+const EMOTE_LIST = "*bark!* You can copy/paste the below ``<:emoteid:>`` into the title of the Google Calendar events!\n\n\
+``Group schedules:``\n\n\
+<:GG:326370179908894730> ``<:GG:326370179908894730>``\n\n\
+``Member schedules:``\n\n\
+<:taecat:232366572444844033> ``<:taecat:232366572444844033>``\n\
+<:sicacat:267228906279403522> ``<:sicacat:267228906279403522>``\n\
+<:sunnycat:316478154560765952> ``<:sunnycat:316478154560765952>``\n\
+<:fanycat:265636931944054784> ``<:fanycat:265636931944054784>``\n\
+<:hyocat:271741296412983296> ``<:hyocat:271741296412983296>``\n\
+<:yuricat:267553926079971338> ``<:yuricat:267553926079971338>``\n\
+<:soocat:283181358417707018> ``<:soocat:283181358417707018>``\n\
+<:yoonacat:318666350862008320> ``<:yoonacat:318666350862008320>``\n\
+<:seocat:271693648427614208> ``<:seocat:271693648427614208>``";
+
 //functions
 
 function clean(channel, numberMessages, recurse) {
@@ -223,10 +263,10 @@ function generateCalendar (message, events) {
     let embed = new bot.discord.RichEmbed();
     embed.setTitle("🗓 UPCOMING SNSD SCHEDULES");
     //embed.setURL("https://calendar.google.com/calendar/embed?src=" + guildSettings["calendarID"]);
-    embed.setThumbnail("https://imgur.com/uRdKJ7t");
+    embed.setThumbnail("https://cdn.discordapp.com/attachments/431603905764392960/485572035595206693/test1.png");
     embed.setColor("#ffb8ed");
     embed.setDescription(finalString);
-    embed.setFooter("Last updated", "https://cdn.discordapp.com/emojis/326370179908894730.png?v=1")
+    embed.setFooter("Check the calendar for more events! Last updated", "https://cdn.discordapp.com/emojis/326370179908894730.png?v=1")
     embed.setTimestamp(new Date());
     p.resolve(embed);
     return p.promise;
@@ -504,11 +544,23 @@ function calendarUpdater(message, calendarId, events,timerCount) {
     }
 }
 
+function displayLogin(message) {
+    let embed = new bot.discord.RichEmbed()
+    .setColor("GREEN")
+    .setTitle(`SNSDCord Shared Google Account`)
+    .setURL("https://calendar.google.com/calendar/r")
+    .addField("E-mail account", `${settings.secrets.snsdcord_account}`, true)
+    .addField("Password", `:snake: Ask Frings!`, true)
+    .setFooter("All this information should be kept confidential and within the moderation team. 🔨");
+    message.channel.send({ embed }).catch((err) => {
+        helpers.log(err);
+    });
+}
 function displayStats(message) {
     let embed = new bot.discord.RichEmbed()
     .setColor("RED")
-    .setTitle(`Niles Bot ${settings.secrets.current_version}`)
-    .setURL("https://github.com/seanecoffey/Niles")
+    .setTitle(`Zero Bot's Schedule Manager ${settings.secrets.current_version}`)
+    .setURL("https://github.com/LucasThePatator/Niles")
     .addField("Servers", bot.client.guilds.size, true)
     .addField("Uptime", moment.duration(process.uptime(), "seconds").format("dd:hh:mm:ss"), true)
     .addField("Ping", `${(bot.client.ping).toFixed(0)} ms`, true)
@@ -516,8 +568,8 @@ function displayStats(message) {
     (${(process.memoryUsage().rss / os.totalmem() * 100).toFixed(2)}%)`, true)
     .addField("System Info", `${process.platform} (${process.arch})\n${(os.totalmem() > 1073741824 ? (os.totalmem() / 1073741824).toFixed(1) + " GB" : (os.totalmem() / 1048576).toFixed(2) + " MB")}`, true)
     .addField("Libraries", `[Discord.js](https://discord.js.org) v${bot.discord.version}\nNode.js ${process.version}`, true)
-    .addField("Links", "[Bot invite](https://discordapp.com/oauth2/authorize?permissions=97344&scope=bot&client_id=" + bot.client.user.id + ") | [Support server invite](https://discord.gg/jNyntBn) | [GitHub](https://github.com/seanecoffey/Niles)", true)
-    .setFooter("Created by Sean#8856");
+    .addField("Links", "[SNSD Discord](https://discord.gg/3AwRavx) | [Zero Schedules GitHub](https://github.com/LucasThePatator/Niles) | [Niles GitHub](https://github.com/seanecoffey/Niles)", true)
+    .setFooter("Zero Schedule is based on the Niles bot, created by Sean#8856. Modified by Patator#4885 and Frings#9144.");
     message.channel.send({ embed }).catch((err) => {
         helpers.log(err);
     });
@@ -546,12 +598,16 @@ function run(message) {
             helpers.sendMessageHandler(message, err);
         });
     }
-    if (cmd === "help" || helpers.mentioned(message, "help")) {
+    if (["help", "commands"].includes(cmd) || helpers.mentioned(message, ["help", "commands"])) {
         message.channel.send(HELP_MESSAGE);
         message.delete(5000);
     }
     if (cmd === "snsdcord" || helpers.mentioned(message, "help")) {
         message.channel.send(SNSD_GUIDE);
+        message.delete(5000);
+    }
+    if (cmd === "emotes" || helpers.mentioned(message, "help")) {
+        message.channel.send(EMOTE_LIST);
         message.delete(5000);
     }
     if (cmd === "invite" || helpers.mentioned(message, "invite")) {
@@ -628,6 +684,10 @@ function run(message) {
     }
     if (["stats", "info"].includes(cmd) || helpers.mentioned(message, ["stats", "info"])) {
         displayStats(message);
+        message.delete(5000);
+    }
+    if (["snsdlogin", "account"].includes(cmd) || helpers.mentioned(message, ["snsdlogin", "account"])) {
+        displayLogin(message);
         message.delete(5000);
     }
     if (cmd === "get" || helpers.mentioned(message, "get")) {
