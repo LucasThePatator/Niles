@@ -202,7 +202,6 @@ function generateCalendar (message, events) {
         tempFinDate = helpers.convertDate(tempFinDate, message.guild.id);
 
         sendString += "    **— " + helpers.getOutputDateString(tempStartDate, message.guild.id) + "**    ";
-       
         sendString += events[i]["summary"] 
 
         if(events[i].allday === false)
