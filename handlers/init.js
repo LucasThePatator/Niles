@@ -6,23 +6,25 @@ const guilds = require("./guilds.js");
 const defer = require("promise-defer");
 
 const HELP_MESSAGE = "```\
-        Niles Usage - SETUP MODE\n\
----------------------------\n\
-NOTE: ALL COMMANDS BECOME AVAILABLE AFTER SETUP IS COMPLETE\n\
-!setup               -  Get details on how to setup Niles for use.\n\
-!prefix              -  View or change the prefix for Niles\n\
-!id                  -  Set the Google calendar ID for the guild\n\
-!tz                  -  Set the timezone for the guild\n\
-!help                -  Display this message\n\
-```\n\
-Visit http://niles.seanecoffey.com/setup for more info.";
+        Zero Schedule functionality - SETUP MODE```\n\
+\n\
+NOTE: FURTHER COMMANDS BECOME AVAILABLE AFTER SETUP IS COMPLETE\n\
+``!setup``               -  Get details on how to setup the Zero Schedule functionality for use.\n\
+``!prefix``              -  View or change the prefix for Niles\n\
+``!id``                  -  Set the Google calendar ID for the server\n\
+``!tz``                  -  Set the timezone for the server\n\
+``!help``                -  Display full help message\n\
+\n\
+Visit <http://niles.seanecoffey.com/setup> for more info.";
 
 const SETUP_MESSAGE = "\
-Hi! Lets get me setup for use in this Discord. The steps are outlined below, but for a detailed setup guide, visit http://niles.seanecoffey.com/setup \n\
-\n1. Invite `niles-291@niles-169605.iam.gserviceaccount.com` to \'Make changes to events\' under the Permission Settings on the Google Calendar you want to use with Niles\n\
-2. Enter the Calendar ID of the calendar to Discord using the `!id` command, i.e. `!id 123abc@123abc.com`\n\
-3. Enter the timezone you want to use in Discord with the `!tz` command, i.e. `!tz gmt+10:00`, (Note: Must be formatted like this)\n\
-\n Niles should now be able to sync with your Google calendar and interact with on you on Discord, try `!display` to get started!";
+*bark!* Hi! <:zeroblush:431490837726101514>\n\
+I am self hosted, so you should know how to set me up... But if you need a reminder, we can do this!\n\
+*Over on <http://niles.seanecoffey.com/setup> there are more detailed instructions for the originating bot...* \n\
+\n**1.** Invite `snsd-schedule-google-calendar@snsdcord-0805.iam.gserviceaccount.com` to 'Make changes to events' under the Permission Settings on the Google Calendar you want me to keep an eye on! *For our girls, that is ``esjpm52cbkkhdsfm2kcr6u0ico@group.calendar.google.com``...*\n\
+**2.** Now tell me here on Discord what the Calendar ID is! e.g. ``!id 123abc@123abc.com``\n\
+**3.** Tell me the timezone you want me to use in Discord with the ``!tz`` command, e.g. ``!tz gmt+09:00``, *(Of course you want me to keep track of things in Korea right? Still, you need to format it like this or I won't understand it...)*\n\n\
+*Bark!* I should now be able to sync with your Google calendar and interact with you on Discord. I learned a new command now, why do't you try telling me ``!display`` to get started!";
 
 //functions
 
