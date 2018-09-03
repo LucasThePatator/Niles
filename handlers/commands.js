@@ -313,7 +313,12 @@ function updateCalendar(message, events, human) {
   let calendar = helpers.readFile(calendarPath);
   if (calendar["calendarMessageId"] === "") {
       clearInterval(autoUpdater[message.guild.id]);
-      message.client.channels.get(settings.secrets["post_channel"]).send("I can't find the last calendar I posted. Use `!display` and I'll post a new one.").then((m) => {});
+      message.client.channels.get(settings.secrets["post_channel"]).send("I can't find the last calendar I posted. Use `!display` and I'll post a new one.").then((m) => {}).catch((err) => {
+            helpers.log("error getting post channel: " + message.guild.id + ": " + err);
+            calendar["calendarMessageId"] = "";
+            helpers.writeGuildSpecific(message.guild.id, calendar, "calendar");
+            return;
+      });
       return;
   }
   let messageId = calendar["calendarMessageId"];
