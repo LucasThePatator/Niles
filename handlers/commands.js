@@ -307,6 +307,7 @@ function postCalendar(message, events) {
 }
 
 function updateCalendar(message, events, human) {
+  console.log("updateCalendar");
   let guildSettingsPath = path.join(__dirname, "..", "stores", message.guild.id, "settings.json");
   let guildSettings = helpers.readFile(guildSettingsPath);
   let calendarPath = path.join(__dirname, "..", "stores", message.guild.id, "calendar.json");
@@ -328,7 +329,9 @@ function updateCalendar(message, events, human) {
           if ((timerCount[message.guild.id] === 0 || !timerCount[message.guild.id]) && human) {
             startUpdateTimer(message);
           }
-      })
+      }).catch((err) => {
+          console.log("error fenerating calendar: " + err);
+      });
   }).catch((err) => {
       if (err.code === 1008) {
           helpers.log("error fetching previous calendar message in guild: " + message.guild.id + ": " + err);
@@ -346,6 +349,7 @@ function updateCalendar(message, events, human) {
 }
 
 function startUpdateTimer(message) {
+    console.log("startUpdateTimer");
     if (!timerCount[message.guild.id]) {
       timerCount[message.guild.id] = 0;
     }
