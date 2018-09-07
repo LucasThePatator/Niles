@@ -13,7 +13,7 @@ let restricted = require("./handlers/nopermissions.js");
 let dm = require("./handlers/dm.js");
 const fs = require("fs");
 
-client.login(settings.secrets.bot_token);
+client.login(settings.secrets.bot_token)
 
 client.on("ready", () => {
     helpers.log("Bot is logged in");
@@ -88,7 +88,7 @@ client.on("message", (message) => {
 // ProcessListeners
 
 process.on("uncaughtException", (err) => {
-    helpers.log("uncaughtException error" + err);
+    helpers.log("uncaughtException error : \n" + JSON.stringify(err));
 });
 
 process.on("SIGINT", () => {

@@ -330,7 +330,7 @@ function updateCalendar(message, events, human) {
             startUpdateTimer(message);
           }
       }).catch((err) => {
-          console.log("error fenerating calendar: " + err);
+          console.log("error generating calendar: " + err);
       });
   }).catch((err) => {
       if (err.code === 1008) {
@@ -363,7 +363,12 @@ function startUpdateTimer(message) {
     if (!autoUpdater[message.guild.id]) {
         timerCount[message.guild.id] += 1;
         helpers.log("Starting update timer in guild: " + message.guild.id);
+    try
+    {
         return autoUpdater[message.guild.id] = setInterval(function func() {calendarUpdater(message, calendarID, events, timerCount[message.guild.id]);}, settings.secrets.calendar_update_interval);
+    } catch (err) {
+        helpers.log("error starting the autoupdater" + err);
+    }
     }
     if (autoUpdater[message.guild.id]["_idleTimeout"] !== settings.secrets.calendar_update_interval) {
           try {
@@ -376,7 +381,7 @@ function startUpdateTimer(message) {
                 timerCount[message.guild.id] -= 1;
             }
     } else {
-      return helpers.log("timer not startedin guild: " + message.guild.id);
+      return helpers.log("timer not started in guild: " + message.guild.id);
     }
 }
 
