@@ -260,12 +260,15 @@ function generateCalendar (message, events) {
 
         sendString += "    **— " + helpers.getOutputDateString(tempStartDate, message.guild.id) + "**    ";
         let summary = events[i]["summary"];
+        let bracketIndex = summary.search('[\[]');
+        let summaryStart = summary.substring(0, bracketIndex);
+        let summaryEnd = summary.substring(bracketIndex);
         for(let key in emoteLUT)
         {
-            summary = summary.replace(key, emoteLUT[key])
+            summaryStart = summaryStart.replace(key, emoteLUT[key])
         }
 
-        sendString += summary;
+        sendString += summaryStart + summaryEnd;
 
         if(events[i].allday === false)
         {
