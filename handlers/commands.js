@@ -225,6 +225,20 @@ function getEvents(message, calendarID, events) {
     });
 }
 
+const emoteLUT =
+{
+    "Tae": "<:taecat:232366572444844033>",
+    "Sica": "<:sicacat:267228906279403522>",
+    "Sunny": "<:sunnycat:316478154560765952>",
+    "Fany": "<:fanycat:265636931944054784>",
+    "Hyo": "<:hyocat:271741296412983296>",
+    "Yuri": "<:yuricat:267553926079971338>",
+    "Soo": "<:soocat:283181358417707018>",
+    "Yoona": "<:yoonacat:318666350862008320>",
+    "Seo": "<:seocat:271693648427614208>",
+    "GG": "<:GG:326370179908894730>"
+}
+
 function generateCalendar (message, events) {
     console.log("GenerateCalendar")
     let calendarPath = path.join(__dirname, "..", "stores", message.guild.id, "calendar.json");
@@ -245,7 +259,13 @@ function generateCalendar (message, events) {
         tempFinDate = helpers.convertDate(tempFinDate, message.guild.id);
 
         sendString += "    **— " + helpers.getOutputDateString(tempStartDate, message.guild.id) + "**    ";
-        sendString += events[i]["summary"] 
+        let summary = events[i]["summary"];
+        for(let key in emoteLUT)
+        {
+            summary = summary.replace(key, emoteLUT[key])
+        }
+
+        sendString += summary;
 
         if(events[i].allday === false)
         {
