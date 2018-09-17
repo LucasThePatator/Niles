@@ -226,6 +226,7 @@ function getEvents(message, calendarID, events) {
 }
 
 function generateCalendar (message, events) {
+    console.log("GenerateCalendar")
     let calendarPath = path.join(__dirname, "..", "stores", message.guild.id, "calendar.json");
     let calendar = helpers.readFile(calendarPath);
     let guildSettingsPath = path.join(__dirname, "..", "stores", message.guild.id, "settings.json");
@@ -272,6 +273,7 @@ function generateCalendar (message, events) {
 }
 
 function postCalendar(message, events) {
+    console.log("postCalendar")
     let calendarPath = path.join(__dirname, "..", "stores", message.guild.id, "calendar.json");
     let calendar = helpers.readFile(calendarPath);
     let guildSettingsPath = path.join(__dirname, "..", "stores", message.guild.id, "settings.json");
@@ -307,6 +309,7 @@ function postCalendar(message, events) {
 }
 
 function updateCalendar(message, events, human) {
+    console.log("updateCalendar")
   let guildSettingsPath = path.join(__dirname, "..", "stores", message.guild.id, "settings.json");
   let guildSettings = helpers.readFile(guildSettingsPath);
   let calendarPath = path.join(__dirname, "..", "stores", message.guild.id, "calendar.json");
