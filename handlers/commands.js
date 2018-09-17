@@ -309,7 +309,7 @@ function postCalendar(message, events) {
 }
 
 function updateCalendar(message, events, human) {
-    console.log("updateCalendar")
+  console.log("updateCalendar");
   let guildSettingsPath = path.join(__dirname, "..", "stores", message.guild.id, "settings.json");
   let guildSettings = helpers.readFile(guildSettingsPath);
   let calendarPath = path.join(__dirname, "..", "stores", message.guild.id, "calendar.json");
@@ -331,7 +331,9 @@ function updateCalendar(message, events, human) {
           if ((timerCount[message.guild.id] === 0 || !timerCount[message.guild.id]) && human) {
             startUpdateTimer(message);
           }
-      })
+      }).catch((err) => {
+          console.log("error generating calendar: " + err);
+      });
   }).catch((err) => {
       if (err.code === 1008) {
           helpers.log("error fetching previous calendar message in guild: " + message.guild.id + ": " + err);
@@ -349,6 +351,7 @@ function updateCalendar(message, events, human) {
 }
 
 function startUpdateTimer(message) {
+    console.log("startUpdateTimer");
     if (!timerCount[message.guild.id]) {
       timerCount[message.guild.id] = 0;
     }
@@ -362,7 +365,12 @@ function startUpdateTimer(message) {
     if (!autoUpdater[message.guild.id]) {
         timerCount[message.guild.id] += 1;
         helpers.log("Starting update timer in guild: " + message.guild.id);
+    try
+    {
         return autoUpdater[message.guild.id] = setInterval(function func() {calendarUpdater(message, calendarID, events, timerCount[message.guild.id]);}, settings.secrets.calendar_update_interval);
+    } catch (err) {
+        helpers.log("error starting the autoupdater" + err);
+    }
     }
     if (autoUpdater[message.guild.id]["_idleTimeout"] !== settings.secrets.calendar_update_interval) {
           try {
@@ -375,7 +383,7 @@ function startUpdateTimer(message) {
                 timerCount[message.guild.id] -= 1;
             }
     } else {
-      return helpers.log("timer not startedin guild: " + message.guild.id);
+      return helpers.log("timer not started in guild: " + message.guild.id);
     }
 }
 
