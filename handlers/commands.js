@@ -63,19 +63,19 @@ Events need to follow some very easy criteria to not cause issues (and look pret
 -  Every two weeks (or max one month), ``!display`` should be ran **once** to have a new post in <#213912439140515840>;\n\n\
 In case of doubts or issues, ping Frings or Pata.";
 
-const EMOTE_LIST = "*bark!* You can copy/paste the below ``<:emoteid:>`` into the title of the Google Calendar events!\n\n\
+const EMOTE_LIST = "*bark!* You can use the following words in the title of the Google Calendar events! to replace them with the corresponding cat emotes\n\n\
 ``Group schedules:``\n\n\
-<:GG:326370179908894730> ``<:GG:326370179908894730>``\n\n\
+GG ``<:GG:326370179908894730>``\n\n\
 ``Member schedules:``\n\n\
-<:taecat:232366572444844033> ``<:taecat:232366572444844033>``\n\
-<:sicacat:267228906279403522> ``<:sicacat:267228906279403522>``\n\
-<:sunnycat:316478154560765952> ``<:sunnycat:316478154560765952>``\n\
-<:fanycat:265636931944054784> ``<:fanycat:265636931944054784>``\n\
-<:hyocat:271741296412983296> ``<:hyocat:271741296412983296>``\n\
-<:yuricat:267553926079971338> ``<:yuricat:267553926079971338>``\n\
-<:soocat:283181358417707018> ``<:soocat:283181358417707018>``\n\
-<:yoonacat:318666350862008320> ``<:yoonacat:318666350862008320>``\n\
-<:seocat:271693648427614208> ``<:seocat:271693648427614208>``";
+Tae ``<:taecat:232366572444844033>``\n\
+Sica ``<:sicacat:267228906279403522>``\n\
+Sunny ``<:sunnycat:316478154560765952>``\n\
+Fany ``<:fanycat:265636931944054784>``\n\
+Hyo ``<:hyocat:271741296412983296>``\n\
+Yuri ``<:yuricat:267553926079971338>``\n\
+Soo ``<:soocat:283181358417707018>``\n\
+Yoona ``<:yoonacat:318666350862008320>``\n\
+Seo ``<:seocat:271693648427614208>``";
 
 //functions
 
