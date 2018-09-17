@@ -67,15 +67,15 @@ const EMOTE_LIST = "*bark!* You can use the following words in the title of the 
 ``Group schedules:``\n\n\
 GG ``<:GG:326370179908894730>``\n\n\
 ``Member schedules:``\n\n\
-Tae ``<:taecat:232366572444844033>``\n\
-Sica ``<:sicacat:267228906279403522>``\n\
-Sunny ``<:sunnycat:316478154560765952>``\n\
-Fany ``<:fanycat:265636931944054784>``\n\
-Hyo ``<:hyocat:271741296412983296>``\n\
-Yuri ``<:yuricat:267553926079971338>``\n\
-Soo ``<:soocat:283181358417707018>``\n\
-Yoona ``<:yoonacat:318666350862008320>``\n\
-Seo ``<:seocat:271693648427614208>``";
+Tae <:taecat:232366572444844033>\n\
+Sica <:sicacat:267228906279403522>\n\
+Sunny <:sunnycat:316478154560765952>\n\
+Fany <:fanycat:265636931944054784>\n\
+Hyo <:hyocat:271741296412983296>\n\
+Yuri <:yuricat:267553926079971338>\n\
+Soo <:soocat:283181358417707018>\n\
+Yoona <:yoonacat:318666350862008320>\n\
+Seo <:seocat:271693648427614208>";
 
 //functions
 
